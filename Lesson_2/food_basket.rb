@@ -1,5 +1,5 @@
-  products = {}
-  total = 0
+products = {}
+total = 0
 
 while true do
   puts "Enter the name of product"
@@ -27,9 +27,10 @@ if products
   end
 end
 
-##products.each_key do |product| 
-##  print "#{product}: "
-##  products[product].each_pair { |price, amount| puts "price = #{price}, amount = #{amount}, sum = #{price * amount}"} 
-##end
+#another output
+#products.each_key do |product| 
+#  print "#{product}: "
+#  products[product].each_pair { |price, amount| puts "price = #{price}, amount = #{amount}, sum = #{price * amount}"} 
+#end
 
 puts "total sum = #{total}" if total != 0
