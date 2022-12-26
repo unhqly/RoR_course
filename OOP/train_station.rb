@@ -1,5 +1,5 @@
 class Station
-  attr_reader :trains
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
@@ -10,18 +10,18 @@ class Station
     if train
       @trains << train 
       train.station = self
-      puts "#{train.name} successfully accepted at #{self.name} station"
+      puts "Train successfully accepted at #{self.name} station"
     else 
-      puts "There is no #{train.name} train"
+      puts "There is no entered train"
     end
   end
 
   def send_train(train)
     if @trains.include?(train)
       @trains.delete(train)
-      puts "#{train.name} left #{self.name} station"
+      puts "Train left #{self.name} station"
     else
-      puts "There is no train #{train.name} on #{self.name} station"
+      puts "There is no entered train on #{self.name} station"
     end
   end 
 
@@ -58,13 +58,15 @@ class Route
 end
 
 class Train
-  attr_reader :speed, :number_of_boxcars, :station
+  attr_reader :speed, :number_of_boxcars
+  attr_accessor :station
 
   def initialize(number, type, number_of_boxcars)
     @number = number
     @type = type  
     @number_of_boxcars = number_of_boxcars
     @speed = 0
+    @station
   end
 
   def increase_speed
@@ -87,32 +89,46 @@ class Train
     if route
       @route = route
       @station = @route.stations[0]
+      puts "Route successfully added at train's route list"
+      @station.accept_train(self)
     else
       puts "There is no route in route list"
     end
   end
 
   def move_forward
-    @station = @route[@route.find_index(@station) + 1] if @route[@route.find_index(@station) + 1]
+    if @route.stations[@route.stations.index(@station) + 1]
+      @station.send_train(self)
+      @station = @route.stations[@route.stations.index(@station) + 1]
+      @station.accept_train(self)
+    else 
+      puts "Train at final station"
+    end
   end
 
   def move_back
-    @station = @route[@route.find_index(@station) - 1] if @route[@route.find_index(@station) - 1] 
+    if @route.stations.index(@station) - 1 >= 0
+      @station.send_train(self)
+      @station = @route.stations[@route.stations.index(@station) - 1]
+      @station.accept_train(self)
+    else
+      puts "Train at first station"
+    end
   end
 
   def previous_station
-    #@route[@route.find_index(@station) - 1] ? @route[@route.find_index(@station) - 1] : puts "There is no previous station"
-    if @route[@route.find_index(@station) - 1]
-      @route[@route.find_index(@station) - 1]
+    #@route.stations.index(@station) - 1 >= 0 ? @route.stations[@route.stations.index(@station) - 1] : puts "There is no previous station"
+    if @route.stations.index(@station) - 1 >= 0
+      @route.stations[@route.stations.index(@station) - 1]
     else
       puts "There is no previous station"
     end
   end
 
   def next_station
-    #@route[@route.find_index(@station) + 1] ? @route[@route.find_index(@station) + 1] : puts "There is no next station"
-    if @route[@route.find_index(@station) + 1]
-      @route[@route.find_index(@station) + 1]
+    #@route.stations[@route.stations.index(@station) + 1] ? @route.stations[@route.stations.index(@station) + 1] : puts "There is no next station"
+    if @route.stations[@route.stations.index(@station) + 1]
+      @route.stations[@route.stations.index(@station) + 1]
     else
       puts "There is no next station"
     end
