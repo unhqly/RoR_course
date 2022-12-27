@@ -1,18 +1,34 @@
+=begin
+
+$all_objects = []
+
+def instance_exits(instance)
+  if $all_objects.include?(instance.object_id)
+    true
+  else
+    false
+  end
+end
+
+=end
+
 class Station
   attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
+#   $all_objects << self.object_id
   end
-  
+
   def accept_train(train)
-    if train
+#   if instance_exits(train)
+    if train && !@trains.include?(train)
       @trains << train 
       train.station = self
       puts "Train successfully accepted at #{self.name} station"
     else 
-      puts "There is no entered train"
+      puts "Entered train doesn't exist or already at the station"
     end
   end
 
@@ -25,11 +41,17 @@ class Station
     end
   end 
 
-  def show_reight_trains_list
-    @trains.each { |train| train if train.type == 'reight' }
-  end
-  def show_passenger_trains_list
-    @trains.each { |train| puts train if train.type == 'passenger' }
+  def show_trains_list
+    @amount_of_reight_trains = 0
+    @amount_of_passenger_trains = 0
+    @trains.each do |train| 
+      if train.type == "reight"
+        @amount_of_reight_trains += 1
+      elsif train.type == "passenger"
+        @amount_of_passenger_trains += 1
+      end
+    end
+    puts "At #{self.name} station #{@amount_of_reight_trains} reight trains and #{@amount_of_passenger_trains} passenger trains"
   end
 end
 
@@ -38,18 +60,32 @@ class Route
 
   def initialize(start, finish)
     @stations = [start, finish]
+#   $all_objects << self.object_id
   end
 
   def add_station(position, station)
-    @stations.insert(position - 1, station)     
+#   if instance_exits(station)
+    if station && !@stations.include?(station)
+      @stations.insert(position - 1, station)
+    else
+      puts "Station doesn't exist or already in route list"
+    end     
   end
 
   def delete_station(station)
-    #stations.length > 2 ? stations.delete(station) : puts "Route must have at least two stations"
-    if @stations.length > 2 
-      @stations.delete(station)
+#   if instance_exits(station)
+    if station
+      if @stations.include?(station)
+        if @stations.length > 2 
+          @stations.delete(station)
+        else
+          puts "Route must have at least two stations"
+        end
+      else 
+        puts "There is no #{station.name} station in route list"
+      end
     else
-      puts "Route must have at least two stations"
+      puts "#{station.name} station doesn't exist"
     end
   end
   def show_route
@@ -58,7 +94,7 @@ class Route
 end
 
 class Train
-  attr_reader :speed, :number_of_boxcars
+  attr_reader :speed, :number_of_boxcars, :type
   attr_accessor :station
 
   def initialize(number, type, number_of_boxcars)
@@ -67,6 +103,7 @@ class Train
     @number_of_boxcars = number_of_boxcars
     @speed = 0
     @station
+#   $all_objects << self.object_id
   end
 
   def increase_speed
@@ -86,13 +123,14 @@ class Train
   end
 
   def add_route(route)
+#   if instance_exits(route)
     if route
       @route = route
       @station = @route.stations[0]
       puts "Route successfully added at train's route list"
       @station.accept_train(self)
     else
-      puts "There is no route in route list"
+      puts "Entered route doesn't exist"
     end
   end
 
@@ -117,7 +155,6 @@ class Train
   end
 
   def previous_station
-    #@route.stations.index(@station) - 1 >= 0 ? @route.stations[@route.stations.index(@station) - 1] : puts "There is no previous station"
     if @route.stations.index(@station) - 1 >= 0
       @route.stations[@route.stations.index(@station) - 1]
     else
@@ -126,7 +163,6 @@ class Train
   end
 
   def next_station
-    #@route.stations[@route.stations.index(@station) + 1] ? @route.stations[@route.stations.index(@station) + 1] : puts "There is no next station"
     if @route.stations[@route.stations.index(@station) + 1]
       @route.stations[@route.stations.index(@station) + 1]
     else
@@ -134,5 +170,3 @@ class Train
     end
   end
 end
-
-#TODO: when move forward/back train has to appear/disappear in trains array at station
