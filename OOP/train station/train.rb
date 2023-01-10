@@ -2,27 +2,18 @@ class Train
   attr_reader :speed, :number_of_boxcars, :type
   attr_accessor :station
 
-  def initialize(number, type, number_of_boxcars)
+  def initialize(number)
     @number = number
-    @type = type  
-    @number_of_boxcars = number_of_boxcars
     @speed = 0
+    @boxcars = []
   end
 
-  def increase_speed
-    @speed += 30
+  def add_boxcar(boxcar)
+    @boxcars << boxcar if @speed == 0
   end
 
-  def stop
-    @speed = 0
-  end
-
-  def add_boxcar
-    @number_of_boxcars += 1 if @speed == 0
-  end
-
-  def delete_boxcar
-    @number_of_boxcars -= 1 if @number_of_boxcars > 0 && @speed == 0
+  def delete_boxcar(boxcar)
+    @boxcars.delete(boxcar) if @speed == 0
   end
 
   def add_route(route)
@@ -31,6 +22,26 @@ class Train
     @station.accept_train(self)
     puts "Route successfully added at train's route list"
   end
+
+  def move_forward
+    if next_station
+      @station.send_train(self)
+      @station = @route.stations[@route.stations.index(@station) + 1]
+      @station.accept_train(self)
+    end
+  end
+
+  def move_back
+    if previous_station
+      @station.send_train(self)
+      @station = @route.stations[@route.stations.index(@station) - 1]
+      @station.accept_train(self)
+    end
+  end
+
+  protected
+
+  #all methods listed below have to be not allowed for user
 
   def previous_station
     if @route.stations.index(@station) - 1 >= 0
@@ -48,19 +59,11 @@ class Train
     end
   end
 
-  def move_forward
-    if next_station
-      @station.send_train(self)
-      @station = @route.stations[@route.stations.index(@station) + 1]
-      @station.accept_train(self)
-    end
+  def increase_speed
+    @speed += 30
   end
 
-  def move_back
-    if previous_station
-      @station.send_train(self)
-      @station = @route.stations[@route.stations.index(@station) - 1]
-      @station.accept_train(self)
-    end
+  def stop
+    @speed = 0
   end
 end
