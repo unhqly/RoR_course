@@ -1,5 +1,5 @@
 class Train
-  attr_reader :speed, :number_of_boxcars, :type
+  attr_reader :speed, :number_of_boxcars, :type, :number
   attr_accessor :station
 
   def initialize(number)
@@ -10,10 +10,12 @@ class Train
 
   def add_boxcar(boxcar)
     @boxcars << boxcar if @speed == 0
+    puts "Boxcar №#{boxcar.number} successfully added to train №#{self.number}"
   end
 
   def delete_boxcar(boxcar)
     @boxcars.delete(boxcar) if @speed == 0
+    puts "Boxcar №#{boxcar.number} deleted from train №#{self.number}"
   end
 
   def add_route(route)

@@ -13,6 +13,6 @@ class Route
     @stations.delete(station)
   end
   def show_route
-    @stations.each { |station| print "#{station.name} "}
+    @stations.each { |station| print "#{station.name} " }
   end
 end
