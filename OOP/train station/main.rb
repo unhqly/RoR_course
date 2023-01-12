@@ -35,16 +35,16 @@ def show_boxcars_list
 end
 
 while true do
-  puts "Enter '1' if you want to create a station"
-  puts "Enter '2' if you want to create a train"
-  puts "Enter '3' if you want to create a route"
-  puts "Enter '4' if you want to create a boxcar"
-  puts "Enter '5' if you want to operate with stations in the route"
-  puts "Enter '6' if you want to add route to train"
-  puts "Enter '7' if you want to operate with boxcars"
-  puts "Enter '8' if you want to move a train"
-  puts "Enter '9' if you want to see train list at stations"
-  puts "Enter '0' if you want to exit"
+  puts "Enter '1' to create a station"
+  puts "Enter '2' to create a train"
+  puts "Enter '3' to create a route"
+  puts "Enter '4' to create a boxcar"
+  puts "Enter '5' to operate with stations in the route"
+  puts "Enter '6' to add route to train"
+  puts "Enter '7' to operate with boxcars"
+  puts "Enter '8' to move a train"
+  puts "Enter '9' to see train list at stations"
+  puts "Enter '0' to exit"
 
   choice = gets.chomp
 
