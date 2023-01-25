@@ -1,9 +1,10 @@
 class Train
+include CompanyName
   attr_reader :speed, :number_of_boxcars, :type, :number
   attr_accessor :station
 
   def initialize(number)
-    @number = number
+    @number = number.to_i
     @speed = 0
     @boxcars = []
   end
@@ -39,6 +40,10 @@ class Train
       @station = @route.stations[@route.stations.index(@station) - 1]
       @station.accept_train(self)
     end
+  end
+
+  def self.find(number)
+    ObjectSpace.each_object(self).to_a.find { |train| train.number == number }
   end
 
   protected

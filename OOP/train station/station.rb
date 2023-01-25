@@ -22,4 +22,8 @@ class Station
     @trains.each { |train| @amount_of_trains += 1 if train.type == type }
     @amount_of_trains
   end
+
+  def self.all
+    ObjectSpace.each_object(self).to_a
+  end
 end

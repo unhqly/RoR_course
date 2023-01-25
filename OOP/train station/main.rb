@@ -1,3 +1,4 @@
+require_relative 'modules'
 require_relative 'boxcar'
 require_relative 'cargo_boxcar'
 require_relative 'cargo_train'
