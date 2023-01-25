@@ -1,5 +1,6 @@
 class Train
-include CompanyName
+  include CompanyName
+  include InstanceCounter
   attr_reader :speed, :number_of_boxcars, :type, :number
   attr_accessor :station
 
@@ -7,6 +8,7 @@ include CompanyName
     @number = number.to_i
     @speed = 0
     @boxcars = []
+    self.register_instance
   end
 
   def add_boxcar(boxcar)
