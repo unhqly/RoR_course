@@ -11,22 +11,16 @@ module CompanyName
 end
 
 module InstanceCounter
-  attr_accessor :instances
-  
-  @@instances = 0
-
-  def self.instances
-    @@instances
-  end
-
   def self.included(base)
     base.extend ClassMethods
     base.include InstanceMethods
   end
 
   module ClassMethods
+    attr_accessor :instances
+
     def instances
-      InstanceCounter.instances
+      @instances ||= 0
     end
   end
 
@@ -34,7 +28,7 @@ module InstanceCounter
 
   module InstanceMethods
     def register_instance
-      InstanceCounter.instances += 1
+      self.class.instances += 1
     end
   end
 end
