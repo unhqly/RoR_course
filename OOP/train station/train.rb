@@ -4,8 +4,11 @@ class Train
   attr_reader :speed, :number_of_boxcars, :type, :number
   attr_accessor :station
 
+  NUMBER_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/
+
   def initialize(number)
-    @number = number.to_i
+    @number = number
+    valid?
     @speed = 0
     @boxcars = []
     self.register_instance
@@ -48,10 +51,21 @@ class Train
     ObjectSpace.each_object(self).to_a.find { |train| train.number == number }
   end
 
+  def valid?
+    validate!
+    true
+  rescue ArgumentError
+    false
+  end 
+
   protected
 
   #all methods listed below have to be not allowed for user
 
+  def validate!
+    raise ArgumentError, "Number has wrong format" if number !~ NUMBER_FORMAT
+  end
+  
   def previous_station
     if @route.stations.index(@station) - 1 >= 0
       @route.stations[@route.stations.index(@station) - 1]
