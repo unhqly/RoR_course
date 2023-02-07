@@ -1,7 +1,7 @@
 class Station
   include InstanceCounter
   include InstanceValidation
-  
+
   attr_reader :name, :trains
 
   def initialize(name)
@@ -30,13 +30,6 @@ class Station
   def self.all
     ObjectSpace.each_object(self).to_a
   end
-
-  def valid?
-    validate!
-    true
-  rescue ArgumentError
-    false
-  end 
 
   protected
 
