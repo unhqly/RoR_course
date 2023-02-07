@@ -1,6 +1,8 @@
 class Train
   include CompanyName
   include InstanceCounter
+  include InstanceValidation
+
   attr_reader :speed, :number_of_boxcars, :type, :number
   attr_accessor :station
 
@@ -8,10 +10,10 @@ class Train
 
   def initialize(number)
     @number = number
-    valid?
     @speed = 0
     @boxcars = []
     self.register_instance
+    validate!
   end
 
   def add_boxcar(boxcar)
@@ -51,19 +53,12 @@ class Train
     ObjectSpace.each_object(self).to_a.find { |train| train.number == number }
   end
 
-  def valid?
-    validate!
-    true
-  rescue ArgumentError
-    false
-  end 
-
   protected
 
   #all methods listed below have to be not allowed for user
 
   def validate!
-    raise ArgumentError, "Number has wrong format" if number !~ NUMBER_FORMAT
+    raise ArgumentError, "Number has wrong format (Examples of correct format: aA1-2a or 23a4F)" if number !~ NUMBER_FORMAT
   end
   
   def previous_station

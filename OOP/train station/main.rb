@@ -44,68 +44,102 @@ class Main
     name = gets.chomp
     @stations_list.push(Station.new(name))
     show_stations_list
+  rescue ArgumentError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry
   end
 
   def create_train
     puts "Type 'Pass' or 'Cargo' to clarify type of train (Passenger or Cargo)"
     train_type = gets.chomp
+    raise TypeError, 'Wrong type of train' if train_type != 'Pass' && train_type != 'Cargo'
     puts "Enter the number of train to create"
     number = gets.chomp
     if train_type == 'Pass'
       @trains.push(PassengerTrain.new(number))
-    else
+    elsif train_type == 'Cargo'
       @trains.push(CargoTrain.new(number))
     end  
+    puts "Train №#{number} successfully created"
     show_common_trains_list
+  rescue TypeError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry 
+  rescue ArgumentError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry
   end
 
   def create_route
-    puts "Enter first and last stations"
-    start = gets.chomp
-    finish = gets.chomp
-    @stations_list.each { |station|
-      if station.name == start
-        start = station
-      elsif station.name == finish
-        finish = station
-      end
-    }
-    @routes.push(Route.new(start, finish))
-    show_routes_list
+    if @stations_list.count >= 2
+      puts "Choose first and last stations"
+      show_stations_list
+      start = gets.chomp.to_i
+      finish = gets.chomp.to_i
+      start = @stations_list[start-1]
+      finish = @stations_list[finish-1]
+      @routes.push(Route.new(start, finish))
+      show_routes_list
+    elsif @stations_list.count == 1
+      puts "You need at least 2 stations to create a route"
+      show_stations_list
+    else
+      puts "Stations list is empty. You can't create route without stations"
+    end
   end
 
   def create_boxcar
     puts "Type 'Pass' or 'Cargo' to clarify type of boxcar (Passenger or Cargo)"
     boxcar_type = gets.chomp
+    raise TypeError, 'Wrong type of boxcar' if boxcar_type != 'Pass' && boxcar_type != 'Cargo'
     puts "Enter the number of boxcar to create"
     number = gets.chomp
     if boxcar_type == 'Pass'
       @boxcars.push(PassengerBoxcar.new(number))
-    else
+    elsif boxcar_type == 'Cargo'
       @boxcars.push(CargoBoxcar.new(number))
     end  
     show_boxcars_list
+  rescue TypeError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry 
+  rescue ArgumentError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry
   end
 
   def operate_with_stations
-    puts "Enter number of route"
-    show_routes_list
-    choosed_route_number = gets.chomp 
+    if @routes.count > 0
+      puts "Enter number of route"
+      show_routes_list
+      choosed_route_number = gets.chomp.to_i
 
-    puts "Enter number of station"
-    show_stations_list
-    choosed_station_number = gets.chomp
+      puts "Enter number of station"
+      show_stations_list
+      choosed_station_number = gets.chomp.to_i
 
-    puts "Type 'Add' to insert station or 'Del' to remove station"
-    if gets.chomp == 'Add'
-      puts "Enter the position to insert"
-      position = gets.chomp.to_i
-      @routes[choosed_route_number.to_i - 1].add_station(position, @stations_list[choosed_station_number.to_i - 1])
+      puts "Type 'Add' to insert station or 'Del' to remove station"
+      operation_type = gets.chomp
+      raise TypeError, 'Wrong type of operation' if operation_type != 'Add' && operation_type != 'Del'
+      if operation_type == 'Add'
+        puts "Enter the position to insert"
+        position = gets.chomp.to_i
+        @routes[choosed_route_number - 1].add_station(position, @stations_list[choosed_station_number - 1])
+      elsif operation_type == 'Del'
+        if @routes[choosed_route_number - 1].stations.count == 1
+          puts "Route can't include only 1 station"
+        else
+          @routes[choosed_route_number - 1].delete_station(@stations_list[choosed_station_number - 1])
+        end
+      end
+      @routes[choosed_route_number - 1].show_route
+      puts "\n"
     else
-      @routes[choosed_route_number.to_i - 1].delete_station(@stations_list[choosed_station_number.to_i - 1])
+      puts "There're no routes"
     end
-    @routes[choosed_route_number.to_i - 1].show_route
-    puts "\n"
+    rescue TypeError => e
+      puts "#{e.message}. TRY AGAIN"
+      retry
   end
 
   def add_route_to_train

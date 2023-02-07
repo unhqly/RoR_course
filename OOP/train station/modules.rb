@@ -32,3 +32,12 @@ module InstanceCounter
     end
   end
 end
+
+module InstanceValidation
+  def valid?
+    self.validate!
+    true
+  rescue ArgumentError
+    false
+  end 
+end

@@ -1,10 +1,13 @@
 class Station
   include InstanceCounter
+  include InstanceValidation
+  
   attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
+    validate!
   end
 
   def accept_train(train)
@@ -26,5 +29,20 @@ class Station
 
   def self.all
     ObjectSpace.each_object(self).to_a
+  end
+
+  def valid?
+    validate!
+    true
+  rescue ArgumentError
+    false
+  end 
+
+  protected
+
+  #all methods listed below have to be not allowed for user
+
+  def validate!
+    raise ArgumentError, "Name is empty" if name.nil? || name == ''
   end
 end
