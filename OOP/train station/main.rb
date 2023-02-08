@@ -152,6 +152,8 @@ class Main
     choosed_train_number = gets.chomp
     
     @trains[choosed_train_number.to_i - 1].add_route(@routes[choosed_route_number.to_i - 1])
+    puts "Route successfully added at train's route list"
+    puts "Train successfully accepted at #{@routes[choosed_route_number.to_i - 1].stations[0].name} station"
   end
 
   def operate_with_boxcars
@@ -164,24 +166,43 @@ class Main
     choosed_boxcar_number = gets.chomp
 
     puts "Type 'Add' to insert boxcar or 'Del' to remove boxcar"
-    if gets.chomp == 'Add'
+    operation_type = gets.chomp
+    raise TypeError, 'Wrong type of operation' if operation_type != 'Add' && operation_type != 'Del'
+    if operation_type == 'Add'
       @trains[choosed_train_number.to_i - 1].add_boxcar(@boxcars[choosed_boxcar_number.to_i - 1])
-    else
+      puts "Boxcar №#{@boxcars[choosed_boxcar_number.to_i - 1].number} successfully added to train №#{@trains[choosed_train_number.to_i - 1].number}"
+    elsif operation_type == 'Del'
       @trains[choosed_train_number.to_i - 1].delete_boxcar(@boxcars[choosed_boxcar_number.to_i - 1])
+      puts "Boxcar №#{@boxcars[choosed_boxcar_number.to_i - 1].number} deleted from train №#{@trains[choosed_train_number.to_i - 1].number}"
     end
+  rescue RuntimeError
+    puts "Boxcar has wrong type"
+  rescue TypeError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry
   end
 
   def move_train
     puts "Enter number of train"
     show_common_trains_list  
     choosed_train_number = gets.chomp
+    prev_station = @trains[choosed_train_number.to_i - 1].station
 
     puts "Enter 'Fwd' to move forward or 'Back' to move back"
-    if gets.chomp == "Fwd"
+    operation_type = gets.chomp
+    raise TypeError, 'Wrong type of operation' if operation_type != 'Fwd' && operation_type != 'Back'
+    if operation_type == "Fwd"
       @trains[choosed_train_number.to_i - 1].move_forward
-    else
+    elsif operation_type == "Back"
       @trains[choosed_train_number.to_i - 1].move_back
     end
+    puts "Train №#{@trains[choosed_train_number.to_i - 1].number} left #{prev_station.name} station"
+    puts "Train №#{@trains[choosed_train_number.to_i - 1].number} successfully accepted at #{@trains[choosed_train_number.to_i - 1].station.name} station"
+  rescue RuntimeError 
+    puts "There is no station in this direction"
+  rescue TypeError => e
+    puts "#{e.message}. TRY AGAIN"
+    retry
   end
 
   def show_stations_train_list

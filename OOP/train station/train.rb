@@ -18,19 +18,16 @@ class Train
 
   def add_boxcar(boxcar)
     @boxcars << boxcar if @speed == 0
-    puts "Boxcar №#{boxcar.number} successfully added to train №#{self.number}"
   end
 
   def delete_boxcar(boxcar)
     @boxcars.delete(boxcar) if @speed == 0
-    puts "Boxcar №#{boxcar.number} deleted from train №#{self.number}"
   end
 
   def add_route(route)
     @route = route
     @station = @route.stations[0]
     @station.accept_train(self)
-    puts "Route successfully added at train's route list"
   end
 
   def move_forward
@@ -53,19 +50,11 @@ class Train
     ObjectSpace.each_object(self).to_a.find { |train| train.number == number }
   end
 
-  protected
-
-  #all methods listed below have to be not allowed for user
-
-  def validate!
-    raise ArgumentError, "Number has wrong format (Examples of correct format: aA1-2a or 23a4F)" if number !~ NUMBER_FORMAT
-  end
-  
   def previous_station
     if @route.stations.index(@station) - 1 >= 0
       @route.stations[@route.stations.index(@station) - 1]
     else
-      puts "There is no previous station"
+      raise RuntimeError
     end
   end
 
@@ -73,8 +62,16 @@ class Train
     if @route.stations[@route.stations.index(@station) + 1]
       @route.stations[@route.stations.index(@station) + 1]
     else
-      puts "There is no next station"
+      raise RuntimeError
     end
+  end
+
+  protected
+
+  #all methods listed below have to be not allowed for user
+
+  def validate!
+    raise ArgumentError, "Number has wrong format (Examples of correct format: aA1-2a or 23a4F)" if number !~ NUMBER_FORMAT
   end
 
   def increase_speed

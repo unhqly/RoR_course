@@ -5,7 +5,7 @@ class CargoTrain < Train
     if boxcar.is_a?(CargoBoxcar)
       super 
     else
-      puts "Boxcar has wrong type"
+      raise RuntimeError
     end
   end
 end

@@ -13,12 +13,10 @@ class Station
   def accept_train(train)
       @trains << train 
       train.station = self
-      puts "Train successfully accepted at #{self.name} station"
   end
 
   def send_train(train)
       @trains.delete(train)
-      puts "Train left #{self.name} station"
   end 
 
   def show_trains_list(type)
