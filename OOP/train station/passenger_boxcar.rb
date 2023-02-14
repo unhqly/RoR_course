@@ -6,8 +6,8 @@ class PassengerBoxcar < Boxcar
 
   def initialize(number, seats_quantity)
     @number = number
-    @seats_quantity = seats_quantity
-    @free_seats_quantity = seats_quantity
+    @seats_quantity = seats_quantity.to_i
+    @free_seats_quantity = @seats_quantity
     @occupied_seats_quantity = 0
     validate!
   end

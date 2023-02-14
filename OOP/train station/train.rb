@@ -3,7 +3,7 @@ class Train
   include InstanceCounter
   include InstanceValidation
 
-  attr_reader :speed, :number_of_boxcars, :type, :number
+  attr_reader :speed, :type, :number, :boxcars
   attr_accessor :station
 
   NUMBER_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/
@@ -64,6 +64,10 @@ class Train
     else
       raise RuntimeError
     end
+  end
+
+  def show_boxcars_info(&block)
+    @boxcars.each { |boxcar| block.call(boxcar) }
   end
 
   protected

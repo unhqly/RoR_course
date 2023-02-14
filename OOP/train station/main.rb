@@ -10,6 +10,8 @@ require_relative 'train'
 
 class Main
 
+  attr_reader :stations_list
+
   def initialize
     @stations_list = []
     @trains = []
@@ -92,12 +94,13 @@ class Main
     puts "Type 'Pass' or 'Cargo' to clarify type of boxcar (Passenger or Cargo)"
     boxcar_type = gets.chomp
     raise TypeError, 'Wrong type of boxcar' if boxcar_type != 'Pass' && boxcar_type != 'Cargo'
-    puts "Enter the number of boxcar to create"
+    puts "Enter the number of boxcar and amout of seats (for passenger boxcar) or full volume (for cargo boxcar) to create boxcar"
     number = gets.chomp
+    amount_of_content = gets.chomp
     if boxcar_type == 'Pass'
-      @boxcars.push(PassengerBoxcar.new(number))
+      @boxcars.push(PassengerBoxcar.new(number, amount_of_content))
     elsif boxcar_type == 'Cargo'
-      @boxcars.push(CargoBoxcar.new(number))
+      @boxcars.push(CargoBoxcar.new(number, amount_of_content))
     end  
     show_boxcars_list
   rescue TypeError => e
@@ -209,7 +212,50 @@ class Main
     puts "Enter number of station"
     show_stations_list
     choosed_station_number = gets.chomp
-    puts @stations_list[choosed_station_number.to_i - 1].trains
+    @stations_list[choosed_station_number.to_i - 1].show_trains_info do |train|
+      print "№#{train.number} "
+      if train.is_a?(PassengerTrain)
+        puts "Passenger"
+      else
+        puts "Cargo"
+      end
+      puts "Amount of boxcars: #{train.boxcars.count}"
+    end
+  end
+
+  def show_boxcars_of_train
+    puts "Enter number of train"
+    show_common_trains_list
+    choosed_train_number = gets.chomp
+    puts "Boxcars:"
+    @trains[choosed_train_number.to_i - 1].show_boxcars_info do |boxcar| 
+      print "№#{boxcar.number} "
+      if boxcar.is_a?(PassengerBoxcar)
+        puts "Passenger"
+        puts "Free seats: #{boxcar.free_seats}"
+        puts "Occupied seats: #{boxcar.occupied_seats}"
+      else 
+        puts "Cargo"
+        puts "Available volume: #{boxcar.available_volume}"
+        puts "Occupied volume: #{boxcar.occupied_volume}"
+      end
+    end
+  end
+
+  def take_seat_or_fill_boxcar
+    show_boxcars_of_train
+    puts "Enter number of boxcar"
+    choosed_boxcar_number = gets.chomp
+    choosed_boxcar = @boxcars.select { |boxcar| boxcar if boxcar.number == choosed_boxcar_number }.first
+    if choosed_boxcar.is_a?(PassengerBoxcar)
+      choosed_boxcar.take_seat
+      puts "You took a seat successfully"
+    else
+      puts "Enter the volume which you want to fill the boxcar for"
+      volume = gets.chomp
+      choosed_boxcar.fill_volume(volume)
+      puts "Boxcar filled up successfully"
+    end
   end
 
   def show_menu
@@ -222,6 +268,8 @@ class Main
     puts "Enter '7' to operate with boxcars"
     puts "Enter '8' to move a train"
     puts "Enter '9' to see train list at stations"
+    puts "Enter '10' to see information about boxcars of trains"
+    puts "Enter '11' to take a seat or fill the boxcar"
     puts "Enter '0' to exit"
   end
 end
@@ -251,6 +299,10 @@ while true do
     railway.move_train
   when 9
     railway.show_stations_train_list
+  when 10
+    railway.show_boxcars_of_train
+  when 11
+    railway.take_seat_or_fill_boxcar
   when 0
     return
   else

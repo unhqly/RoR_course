@@ -6,15 +6,15 @@ class CargoBoxcar < Boxcar
 
   def initialize(number, full_volume)
     @number = number
-    @full_volume = full_volume
-    @free_volume = full_volume
+    @full_volume = full_volume.to_i
+    @free_volume = @full_volume
     @filled_volume = 0
     validate!
   end
 
   def fill_volume(size)
-    @filled_volume += size
-    @free_volume -= size
+    @filled_volume += size.to_i
+    @free_volume -= size.to_i
   end
 
   def available_volume

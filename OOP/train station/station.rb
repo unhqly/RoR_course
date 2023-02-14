@@ -2,7 +2,7 @@ class Station
   include InstanceCounter
   include InstanceValidation
 
-  attr_reader :name, :trains
+  attr_reader :name, :trains, :block
 
   def initialize(name)
     @name = name
@@ -27,6 +27,10 @@ class Station
 
   def self.all
     ObjectSpace.each_object(self).to_a
+  end
+
+  def show_trains_info(&block)
+    @trains.each { |train| block.call(train) }
   end
 
   protected
