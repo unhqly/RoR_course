@@ -230,15 +230,9 @@ class Main
     puts "Boxcars:"
     @trains[choosed_train_number.to_i - 1].show_boxcars_info do |boxcar| 
       print "№#{boxcar.number} "
-      if boxcar.is_a?(PassengerBoxcar)
-        puts "Passenger"
-        puts "Free seats: #{boxcar.free_seats}"
-        puts "Occupied seats: #{boxcar.occupied_seats}"
-      else 
-        puts "Cargo"
-        puts "Available volume: #{boxcar.available_volume}"
-        puts "Occupied volume: #{boxcar.occupied_volume}"
-      end
+      if boxcar.is_a?(PassengerBoxcar) then puts "Passenger" else puts "Cargo" end
+      puts "Available volume: #{boxcar.available_volume}"
+      puts "Occupied volume: #{boxcar.occupied_volume}"
     end
   end
 
