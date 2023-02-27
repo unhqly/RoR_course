@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Boxcar
   include CompanyName
   include InstanceValidation
@@ -19,13 +21,13 @@ class Boxcar
   def occupied_volume
     @filled_volume
   end
-  
+
   protected
 
-  #all methods listed below have to be not allowed for user
+  # all methods listed below have to be not allowed for user
 
   def validate!
-    raise ArgumentError, "Number is empty" if number.nil? || number == ''
+    raise ArgumentError, 'Number is empty' if number.nil? || number == ''
     raise ArgumentError, "Boxcar's volume / amount of seats is not specified" if full_volume.nil? || full_volume == ''
   end
 end

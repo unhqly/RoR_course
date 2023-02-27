@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 moscow = Station.new('Moscow')
 sochi = Station.new('Sochi')
 new_york = Station.new('New York')
@@ -91,7 +93,7 @@ cargo_train4.add_route(route4)
 cargo_train5.add_route(route5)
 cargo_train6.add_route(route6)
 
-railway.stations_list.each do |station| 
-puts "#{station.name}:"
-station.trains.each { |train| puts "№#{train.number} #{train.class} #{train.boxcars.count}" }
+railway.stations_list.each do |station|
+  puts "#{station.name}:"
+  station.trains.each { |train| puts "№#{train.number} #{train.class} #{train.boxcars.count}" }
 end

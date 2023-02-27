@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Station
   include InstanceCounter
   include InstanceValidation
@@ -11,13 +13,13 @@ class Station
   end
 
   def accept_train(train)
-      @trains << train 
-      train.station = self
+    @trains << train
+    train.station = self
   end
 
   def send_train(train)
-      @trains.delete(train)
-  end 
+    @trains.delete(train)
+  end
 
   def show_trains_list(type)
     @amount_of_trains = 0
@@ -35,9 +37,9 @@ class Station
 
   protected
 
-  #all methods listed below have to be not allowed for user
+  # all methods listed below have to be not allowed for user
 
   def validate!
-    raise ArgumentError, "Name is empty" if name.nil? || name == ''
+    raise ArgumentError, 'Name is empty' if name.nil? || name == ''
   end
 end

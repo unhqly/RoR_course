@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Train
   include CompanyName
   include InstanceCounter
@@ -6,22 +8,22 @@ class Train
   attr_reader :speed, :type, :number, :boxcars
   attr_accessor :station
 
-  NUMBER_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/
+  NUMBER_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/.freeze
 
   def initialize(number)
     @number = number
     @speed = 0
     @boxcars = []
-    self.register_instance
+    register_instance
     validate!
   end
 
   def add_boxcar(boxcar)
-    @boxcars << boxcar if @speed == 0
+    @boxcars << boxcar if @speed.zero?
   end
 
   def delete_boxcar(boxcar)
-    @boxcars.delete(boxcar) if @speed == 0
+    @boxcars.delete(boxcar) if @speed.zero?
   end
 
   def add_route(route)
@@ -31,19 +33,19 @@ class Train
   end
 
   def move_forward
-    if next_station
-      @station.send_train(self)
-      @station = @route.stations[@route.stations.index(@station) + 1]
-      @station.accept_train(self)
-    end
+    return unless next_station
+
+    @station.send_train(self)
+    @station = @route.stations[@route.stations.index(@station) + 1]
+    @station.accept_train(self)
   end
 
   def move_back
-    if previous_station
-      @station.send_train(self)
-      @station = @route.stations[@route.stations.index(@station) - 1]
-      @station.accept_train(self)
-    end
+    return unless previous_station
+
+    @station.send_train(self)
+    @station = @route.stations[@route.stations.index(@station) - 1]
+    @station.accept_train(self)
   end
 
   def self.find(number)
@@ -51,19 +53,15 @@ class Train
   end
 
   def previous_station
-    if @route.stations.index(@station) - 1 >= 0
-      @route.stations[@route.stations.index(@station) - 1]
-    else
-      raise RuntimeError
-    end
+    raise RuntimeError unless @route.stations.index(@station) - 1 >= 0
+
+    @route.stations[@route.stations.index(@station) - 1]
   end
 
   def next_station
-    if @route.stations[@route.stations.index(@station) + 1]
-      @route.stations[@route.stations.index(@station) + 1]
-    else
-      raise RuntimeError
-    end
+    raise RuntimeError unless @route.stations[@route.stations.index(@station) + 1]
+
+    @route.stations[@route.stations.index(@station) + 1]
   end
 
   def show_boxcars_info(&block)
@@ -72,10 +70,13 @@ class Train
 
   protected
 
-  #all methods listed below have to be not allowed for user
+  # all methods listed below have to be not allowed for user
 
   def validate!
-    raise ArgumentError, "Number has wrong format (Examples of correct format: aA1-2a or 23a4F)" if number !~ NUMBER_FORMAT
+    return unless number !~ NUMBER_FORMAT
+
+    raise ArgumentError,
+          'Number has wrong format (Examples of correct format: aA1-2a or 23a4F)'
   end
 
   def increase_speed

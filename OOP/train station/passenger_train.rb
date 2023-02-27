@@ -1,12 +1,11 @@
+# frozen_string_literal: true
+
 require_relative 'train'
 
 class PassengerTrain < Train
-  
   def add_boxcar(boxcar)
-    if boxcar.is_a?(PassengerBoxcar)
-      super 
-    else
-      raise RuntimeError
-    end
+    raise RuntimeError unless boxcar.is_a?(PassengerBoxcar)
+
+    super
   end
 end
