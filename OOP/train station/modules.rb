@@ -1,5 +1,22 @@
 # frozen_string_literal: true
 
+module Accessors
+  def attr_accessors_with_history(*attributes)
+    prev_values = Hash.new
+    attributes.each do |attribute|
+      var_name = "@#{attribute}".to_sym
+      define_method(attribute) { instance_variable_get(var_name) }
+      define_method("#{attribute}=".to_sym) do |value| 
+        instance_variable_set(var_name, value)
+        prev_values[var_name] = value
+      end
+    end
+  end
+
+  def strong_attr_accessor
+  end
+end
+
 module CompanyName
   attr_reader :company_name
 
