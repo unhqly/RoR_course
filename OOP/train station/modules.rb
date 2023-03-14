@@ -2,19 +2,19 @@
 
 module Accessors
   def attr_accessors_with_history(*attributes)
-    prev_values = Hash.new
     attributes.each do |attribute|
+      "@#{attribute}_prev_values".to_sym = []
       var_name = "@#{attribute}".to_sym
       define_method(attribute) { instance_variable_get(var_name) }
-      define_method("#{attribute}=".to_sym) do |value| 
+      define_method("#{attribute}=".to_sym) do |value|
         instance_variable_set(var_name, value)
-        prev_values[var_name] = value
+        "@#{attribute}_prev_values".to_sym << value
       end
+      define_method("#{attribute}_history".to_sym) { "@#{attribute}_prev_values".to_sym }
     end
   end
 
-  def strong_attr_accessor
-  end
+  def strong_attr_accessor; end
 end
 
 module CompanyName
