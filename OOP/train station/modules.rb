@@ -3,18 +3,29 @@
 module Accessors
   def attr_accessors_with_history(*attributes)
     attributes.each do |attribute|
-      "@#{attribute}_prev_values".to_sym = []
-      var_name = "@#{attribute}".to_sym
+      arr_name = "@#{attribute}_history"
+      var_name = "@#{attribute}"
+      define_method("#{attribute}_history") { instance_variable_get(arr_name) }
       define_method(attribute) { instance_variable_get(var_name) }
+      define_method("#{attribute}_history<<".to_sym) do |value|
+        arr = instance_variable_get(arr_name) || []
+        arr << value
+        instance_variable_set(arr_name, arr)
+      end
       define_method("#{attribute}=".to_sym) do |value|
         instance_variable_set(var_name, value)
-        "@#{attribute}_prev_values".to_sym << value
+        send("#{attribute}_history<<", value)
       end
-      define_method("#{attribute}_history".to_sym) { "@#{attribute}_prev_values".to_sym }
     end
   end
-
-  def strong_attr_accessor; end
+  def strong_attr_accessor(attribute)
+    var_name = "@#{attribute}".to_sym
+    define_method(attribute) { instance_variable_get(var_name) }
+    define_method("#{attribute}=".to_sym) do |value|
+      raise ArgumentError if value.class != var_name.class
+      instance_variable_set(var_name, value)
+    end
+  end
 end
 
 module CompanyName
