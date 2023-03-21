@@ -18,12 +18,58 @@ module Accessors
       end
     end
   end
+
   def strong_attr_accessor(attribute)
     var_name = "@#{attribute}".to_sym
     define_method(attribute) { instance_variable_get(var_name) }
     define_method("#{attribute}=".to_sym) do |value|
       raise ArgumentError, 'Wrong type of value' if instance_variable_get(var_name).class != value.class
       instance_variable_set(var_name, value)
+    end
+  end
+end
+
+module Validation
+
+  def self.included(base)
+      base.extend ValidationClass
+  end
+
+  module ValidationClass
+    def validate(attribute, validation_type, param = nil)
+        @validate_methods ||= []
+        @validate_methods.push([attribute, validation_type, param])
+    end
+
+    def validate_methods
+      @validate_methods || []
+    end
+  end
+
+  def validate!
+      self.class.validate_methods.each do |params|
+          validate_attribute(params[0], params[1], params[2])
+      end
+  end
+
+  def valid?
+    validate!
+    true
+  rescue ArgumentError
+    false
+  end
+
+  private
+
+  def validate_attribute(attribute, validation_type, param)
+    var_name = "@#{attribute}".to_sym
+    case validation_type
+    when :presence
+      raise ArgumentError, "Presence validation done with error. Attribute '#{attribute}' is empty" if instance_variable_get(var_name) == '' || instance_variable_get(var_name).nil?
+    when :format
+      raise ArgumentError, "Format validation done with error. Attribute '#{attribute}' has wrong format" if instance_variable_get(var_name) !~ param
+    when :type
+      raise ArgumentError, "Type validation done with error. Attribute '#{attribute}' has wrong type" if !instance_variable_get(var_name).nil? && !instance_variable_get(var_name).is_a?(param) 
     end
   end
 end
@@ -54,15 +100,6 @@ module InstanceCounter
     def register_instance
       self.class.instances += 1
     end
-  end
-end
-
-module InstanceValidation
-  def valid?
-    validate!
-    true
-  rescue ArgumentError
-    false
   end
 end
 

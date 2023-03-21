@@ -15,6 +15,7 @@ class Main
   include TrainHelper
   include BoxcarHelper
   include RouteHelper
+  
   attr_reader :stations_list
 
   def initialize

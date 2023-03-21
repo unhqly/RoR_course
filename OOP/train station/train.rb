@@ -3,19 +3,22 @@
 class Train
   include CompanyName
   include InstanceCounter
-  include InstanceValidation
+  include Validation 
 
   attr_reader :speed, :type, :number, :boxcars
   attr_accessor :station
 
   NUMBER_FORMAT = /^[0-9a-z]{3}-*[0-9a-z]{2}$/.freeze
 
+  validate :number, :presence
+  validate :number, :format, NUMBER_FORMAT
+
   def initialize(number)
     @number = number
     @speed = 0
     @boxcars = []
-    register_instance
     validate!
+    register_instance
   end
 
   def add_boxcar(boxcar)
@@ -71,13 +74,6 @@ class Train
   protected
 
   # all methods listed below have to be not allowed for user
-
-  def validate!
-    return unless number !~ NUMBER_FORMAT
-
-    raise ArgumentError,
-          'Number has wrong format (Examples of correct format: aA1-2a or 23a4F)'
-  end
 
   def increase_speed
     @speed += 30

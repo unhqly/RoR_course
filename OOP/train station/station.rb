@@ -2,9 +2,11 @@
 
 class Station
   include InstanceCounter
-  include InstanceValidation
+  include Validation
 
   attr_reader :name, :trains, :block
+
+  validate :name, :presence
 
   def initialize(name)
     @name = name
@@ -33,13 +35,5 @@ class Station
 
   def show_trains_info(&block)
     @trains.each { |train| block.call(train) }
-  end
-
-  protected
-
-  # all methods listed below have to be not allowed for user
-
-  def validate!
-    raise ArgumentError, 'Name is empty' if name.nil? || name == ''
   end
 end
